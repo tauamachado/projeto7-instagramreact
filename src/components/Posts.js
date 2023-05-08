@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export default function Posts() {
     const posts = [
         {
@@ -17,6 +19,15 @@ export default function Posts() {
             likedByImage: "assets/img/adorable_animals.svg",
             likedByText: "adorable_animals",
             initialLikesAmount: 200541,
+        },
+        {
+            id: 3,
+            userName: "meowed",
+            userImage: "assets/img/meowed.svg",
+            contentImage: "assets/img/gato-telefone.svg",
+            likedByImage: "assets/img/respondeai.svg",
+            likedByText: "respondeai",
+            initialLikesAmount: 101523,
         }
     ];
 
@@ -38,42 +49,76 @@ export default function Posts() {
 }
 
 function Post(props) {
+    const [salvo, setSalvo] = useState(false)
+    const [curtido, setCurtido] = useState(false)
+    const [numeroCutidas, setNumeroCurtidas] = useState(props.initialLikesAmount)
+
+    function curtir() {
+        if (curtido) {
+            setNumeroCurtidas(numeroCutidas - 1)
+        } else {
+            setNumeroCurtidas(numeroCutidas + 1)
+        }
+        setCurtido(!curtido)
+    }
+
+    function curtirPelaImagem() {
+        if (!curtido) {
+            setNumeroCurtidas(numeroCutidas + 1)
+            setCurtido(true)
+        }
+    }
+
     return (
-        <div class="post">
-                <div class="topo">
-                <div class="usuario">
+        <div className="post" data-test="post">
+                <div className="topo">
+                <div className="usuario">
                     <img src={props.userImage} alt={props.userName}/>
                     {props.userName}
                 </div>
-                <div class="acoes">
+                <div className="acoes">
                     <ion-icon name="ellipsis-horizontal"></ion-icon>
                 </div>
                 </div>
 
-                <div class="conteudo">
-                <img src={props.contentImage} alt="conteúdo"/>
+                <div className="conteudo">
+                    <img
+                        onClick={curtirPelaImagem}
+                        data-test="post-image"
+                        src={props.contentImage}
+                        alt="conteúdo do post"
+                    />
                 </div>
 
-                <div class="fundo">
-                <div class="acoes">
+                <div className="fundo">
+                <div className="acoes">
                     <div>
-                    <ion-icon name="heart-outline"></ion-icon>
-                    <ion-icon name="chatbubble-outline"></ion-icon>
-                    <ion-icon name="paper-plane-outline"></ion-icon>
+                        <ion-icon
+                            class={curtido ? "vermelho" : ""}
+                            name={curtido ? "heart" : "heart-outline"}
+                            data-test="like-post"
+                            onClick={curtir}
+                        />
+                        <ion-icon name="chatbubble-outline"></ion-icon>
+                        <ion-icon name="paper-plane-outline"></ion-icon>
                     </div>
                     <div>
-                    <ion-icon name="bookmark-outline"></ion-icon>
+                        <ion-icon
+                            name={salvo ? "bookmark" : "bookmark-outline"}
+                            data-test="save-post"
+                            onClick={() => setSalvo(!salvo)}
+                        />
                     </div>
                 </div>
 
-                <div class="curtidas">
-                    <img src={props.likedByImage} alt={props.likedByText}/>
-                    <div class="texto">
-                    Curtido por <strong>{props.likedByText}</strong> e <strong>outras {props.initialLikesAmount} pessoas</strong>
+                <div className="curtidas">
+                    <img src={props.likedByImage} alt={props.likedByText} />
+                    <div className="texto">
+                        Curtido por <strong>{props.likedByText}</strong> e <strong>outras <span data-test="likes-number">{numeroCutidas}</span> pessoas</strong>
                     </div>
-                </div>
                 </div>
             </div>
+        </div>
             
     )
 }

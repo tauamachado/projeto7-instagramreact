@@ -4,8 +4,8 @@ import Stories from "./Stories";
 
 export default function Body() {
     return (
-        <div class="body">
-        <div class="esquerda">
+        <div className="body">
+        <div className="esquerda">
             <Stories />
             <Posts />
         </div>
